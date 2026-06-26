@@ -15,8 +15,10 @@ api.interceptors.response.use(
   (res) => res.data,
   (err) => {
     if (err.response?.status === 401) {
-      // Clear any stale auth state and redirect
-      if (!window.location.pathname.startsWith('/auth')) {
+      const path = window.location.pathname
+      // Don't redirect from public pages — only kick out of protected routes
+      const isPublic = path === '/' || path.startsWith('/auth') || path.startsWith('/freelancers')
+      if (!isPublic) {
         window.location.href = '/auth/login'
       }
     }
